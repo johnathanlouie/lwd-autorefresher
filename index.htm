@@ -1,0 +1,90 @@
+﻿<html>
+<head>
+<title>Autorefresher</title>
+<script>
+timerRunning = false;
+timeoutArray = new Array();
+function addInput()
+{
+  document.getElementsByTagName("div")[1].innerHTML += "<span><input />URL<br /><iframe></iframe><br /><input /><input /></span>";
+}
+function setAll()
+{
+  var divinput1 = document.getElementsByTagName("div")[1].getElementsByTagName("input");
+  for (var i = 0; i < document.getElementsByTagName("div")[1].getElementsByTagName("iframe").length; i++)
+  {
+    divinput1[3 * i + 1].value = document.getElementsByTagName("div")[0].getElementsByTagName("input")[0].value;
+    divinput1[3 * i + 2].value = document.getElementsByTagName("div")[0].getElementsByTagName("input")[1].value;
+  }
+}
+function startStop()
+{
+  if (timerRunning)
+  {
+    timerRunning = false;
+    document.getElementsByTagName("div")[0].getElementsByTagName("button")[1].innerHTML = "Start";
+    allTimeout();
+  }
+  else
+  {
+    timerRunning = true;
+    document.getElementsByTagName("div")[0].getElementsByTagName("button")[1].innerHTML = "Stop";
+    allTimeout();
+  }
+}
+function allTimeout()
+{
+  for (var i = 0; i < document.getElementsByTagName("div")[1].getElementsByTagName("iframe").length; i++)
+  {
+    timeoutSetter(i);
+  }
+}
+function timeoutSetter(i)
+{
+  if (timerRunning)
+  {
+    var divinput = document.getElementsByTagName("div")[1].getElementsByTagName("input");
+    var t = (Math.random() * (divinput[3 * i + 2].value - divinput[3 * i + 1].value) + divinput[3 * i + 1].value) * 1000;
+    timeoutArray[i] = setTimeout("refresh(" + i + ")",t);
+  }
+  else
+  {
+    clearTimeout(timeoutArray[i]);
+  }
+}
+function refresh(i)
+{
+  document.getElementsByTagName("iframe")[i].src = document.getElementsByTagName("div")[1].getElementsByTagName("input")[3 * i].value;
+  timeoutSetter(i);
+}
+setTimeout(addInput,0);
+</script>
+<style>
+span
+{
+  display:inline-block;
+}
+iframe
+{
+  resize:both;
+  overflow:auto;
+}
+</style>
+</head>
+
+<body>
+
+<div>
+<h1>Set All Timers</h1>
+<p>To set the refresh interval for all the web sites, enter a number in the first box and an identical number in the second box. To set a random refresh interval for all the web sites, enter the lower limit in the first box and the upper limit in the second box. To set the intervals independently of each other, use the boxes under the Web Pages header.</p>
+<input />~<input /><button onclick="setAll();">Set All</button><button onclick="startStop();">Start</button>
+</div>
+
+<h1>Web Pages</h1>
+<button onclick="addInput();">More Web Sites</button>
+<div>
+</div>
+
+</body>
+
+</html>
